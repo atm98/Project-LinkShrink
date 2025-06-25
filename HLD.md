@@ -59,7 +59,7 @@ C4Container
 
 *   **User Service**: Handles all user-related concerns: registration, login, profile management, and authentication (issuing JWTs). It owns the `users` and `refresh_tokens` databases.
 
-*   **Link Service**: Manages the lifecycle of shortened URLs for authenticated users. This includes creating, updating, deleting, and listing links. It owns the `urls` database.
+*   **Link Service**: Manages the lifecycle of shortened URLs for authenticated users. This includes creating, updating, deleting, and listing links. It owns the `urls` database. **Note:** The `user_id` field in the `urls` table is not a database-level foreign key; the Link Service validates user existence via the User Service at the application level.
 
 *   **Redirect Service**: Its sole responsibility is to perform the redirection from a `short_code` to a `long_url`. It is heavily optimized for reads and designed for high availability and low latency. It does not have its own database but reads from the Link DB and a cache.
 

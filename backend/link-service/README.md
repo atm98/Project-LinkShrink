@@ -15,7 +15,7 @@ Manages the lifecycle of shortened URLs. This includes creating, updating, delet
 | `id`         | `BIGINT`                   | Primary Key, Auto-incrementing.                   |
 | `short_code` | `VARCHAR(30)`              | **Unique, Indexed**. The unique identifier in the short URL. |
 | `long_url`   | `TEXT`                     | Not Null. The original URL to redirect to.        |
-| `user_id`    | `UUID`                     | Foreign Key -> `users.id`. Nullable for anonymous users. |
+| `user_id`    | `UUID`                     | Nullable for anonymous users. Application-level integrity: not a DB foreign key; validated by Link Service via User Service API. |
 | `created_at` | `TIMESTAMP WITH TIME ZONE` | Auto-generated on record creation.                |
 | `expires_at` | `TIMESTAMP WITH TIME ZONE` | Nullable. For links with an expiration date.      |
 

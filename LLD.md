@@ -58,11 +58,13 @@ Stores the mapping between the original long URL and the generated short code.
 | `id`         | `BIGINT`                   | Primary Key, Auto-incrementing.                   |
 | `short_code` | `VARCHAR(30)`              | **Unique, Indexed**. The unique identifier in the short URL. |
 | `long_url`   | `TEXT`                     | Not Null. The original URL to redirect to.        |
-| `user_id`    | `UUID`                     | Foreign Key -> `users.id`. Nullable for anonymous users. |
+| `user_id`    | `UUID`                     | Nullable for anonymous users. Application-level integrity: not a DB foreign key; validated by Link Service via User Service API. |
 | `created_at` | `TIMESTAMP WITH TIME ZONE` | Auto-generated on record creation.                |
 | `expires_at` | `TIMESTAMP WITH TIME ZONE` | Nullable. For links with an expiration date.      |
 
 **Note on `short_code`:** This column must have a unique index to ensure fast lookups for the Redirect Service and to prevent collisions.
+
+**Note on `user_id`:** In a microservices architecture, `user_id` is not a database-level foreign key. The Link Service verifies user existence via the User Service at the application level.
 
 ---
 
@@ -89,6 +91,8 @@ Stores a record for each time a shortened link is accessed.
 
 A simple ERD-style representation of the relationships:
 
+> Note: The relationship between users and urls is enforced at the application level, not via a database foreign key.
+
 ```mermaid
 erDiagram
     users {
@@ -110,7 +114,7 @@ erDiagram
         BIGINT id PK
         VARCHAR(30) short_code
         TEXT long_url
-        UUID user_id FK
+        UUID user_id
         TIMESTAMP created_at
         TIMESTAMP expires_at
     }
@@ -124,7 +128,7 @@ erDiagram
         TEXT referrer
     }
 
-    users ||--o{ urls : "owns"
+    users ||--o{ urls : "owns (application-level)"
     users ||--o{ refresh_tokens : "has"
     urls ||--o{ clicks : "has"
 ```
