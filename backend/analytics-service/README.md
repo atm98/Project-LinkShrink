@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-Processes click events asynchronously. It consumes events from the message queue and aggregates them into a database for analysis. It provides endpoints for users to view statistics for their links.
+Processes click events asynchronously. It consumes events from the message queue and aggregates them into a database for analysis. It provides endpoints for users to view statistics for their links. The analytics database is a logical database/schema within a shared Amazon RDS instance. The service also reads from the Link Service's logical database/schema as needed.
 
 ---
 

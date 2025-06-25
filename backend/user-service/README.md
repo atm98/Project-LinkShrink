@@ -2,13 +2,13 @@
 
 ## 1. Overview
 
-Handles all user-related concerns: registration, login, profile management, and authentication (issuing JWTs). It is the sole owner of the user-related database tables.
+Handles all user-related concerns: registration, login, profile management, and authentication (issuing JWTs). It is the sole owner of the user-related database tables, which reside in a dedicated logical database or schema within a shared Amazon RDS PostgreSQL instance. This ensures strong logical isolation while optimizing cost and management overhead.
 
 ---
 
 ## 2. Database Schema
 
-This service owns the following tables.
+This service owns the following tables within its own logical database/schema in the shared RDS instance.
 
 ### `users` table
 

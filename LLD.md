@@ -4,7 +4,7 @@ This document outlines the database schema for a URL shortener service built on 
 
 ## Core Microservices
 
-The system is divided into several key services, each with its own responsibilities and data ownership:
+The system is divided into several key services, each with its own responsibilities and data ownership. All services use a shared Amazon RDS PostgreSQL instance, with each service having its own logical database or schema for strong logical isolation.
 
 1.  **User Service**: Manages user accounts and authentication.
 2.  **Link Service**: Handles the creation and management of short URLs.
@@ -91,7 +91,7 @@ Stores a record for each time a shortened link is accessed.
 
 A simple ERD-style representation of the relationships:
 
-> Note: The relationship between users and urls is enforced at the application level, not via a database foreign key.
+> Note: Each service's tables reside in its own logical database or schema within a shared Amazon RDS PostgreSQL instance. The relationship between users and urls is enforced at the application level, not via a database foreign key.
 
 ```mermaid
 erDiagram

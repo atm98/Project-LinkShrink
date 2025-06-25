@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-Its sole responsibility is to perform the redirection from a `short_code` to a `long_url`. It is heavily optimized for reads and designed for high availability and low latency. It does not own a database but reads from the Link DB and a cache.
+Its sole responsibility is to perform the redirection from a `short_code` to a `long_url`. It is heavily optimized for reads and designed for high availability and low latency. It does not own a database but reads from the Link Service's logical database/schema within a shared Amazon RDS PostgreSQL instance, and a cache.
 
 ---
 

@@ -2,11 +2,13 @@
 
 ## 1. Overview
 
-Manages the lifecycle of shortened URLs. This includes creating, updating, deleting, and listing links for both anonymous and authenticated users. It is the sole owner of the `urls` database table.
+Manages the lifecycle of shortened URLs. This includes creating, updating, deleting, and listing links for both anonymous and authenticated users. It is the sole owner of the `urls` database table, which resides in a dedicated logical database or schema within a shared Amazon RDS PostgreSQL instance. This ensures strong logical isolation while optimizing cost and management overhead.
 
 ---
 
 ## 2. Database Schema
+
+This service owns the following tables within its own logical database/schema in the shared RDS instance.
 
 ### `urls` table
 

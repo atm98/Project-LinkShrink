@@ -6,7 +6,7 @@ This document outlines the high-level architecture for a scalable URL shortener 
 
 ## 1. System Architecture
 
-The system is designed to separate high-traffic, read-heavy operations from standard, write-heavy API operations. This ensures that the core function of redirecting URLs remains fast and highly available, even under heavy load.
+The system is designed to separate high-traffic, read-heavy operations from standard, write-heavy API operations. All backend services use a shared Amazon RDS PostgreSQL instance, with each service having its own logical database or schema for strong logical isolation.
 
 ```mermaid
 C4Container
@@ -27,8 +27,7 @@ C4Container
             Container(redirect_service, "Redirect Service", "e.g., Go, Rust", "Handles high-volume redirection from short to long URLs.")
         }
 
-        ContainerDb(user_db, "User Database", "PostgreSQL", "Stores user profiles and refresh tokens.")
-        ContainerDb(link_db, "Link Database", "PostgreSQL", "Stores the mapping of short codes to long URLs.")
+        ContainerDb(shared_rds, "Shared Amazon RDS Instance", "PostgreSQL", "Each service has its own logical database or schema within this shared instance.")
         ContainerDb(analytics_db, "Analytics Database", "e.g., ClickHouse", "Stores aggregated click event data for fast queries.")
         ContainerDb(cache, "Cache", "Redis", "Caches short code to long URL mappings for fast reads.")
         Container(queue, "Message Queue", "Kafka / RabbitMQ", "Buffers click events for asynchronous processing.")
@@ -41,16 +40,16 @@ C4Container
     Rel(gateway, analytics_service, "Routes /api/analytics/*")
     Rel(gateway, redirect_service, "Routes /{short_code}")
 
-    Rel(user_service, user_db, "Reads/Writes")
-    Rel(link_service, link_db, "Reads/Writes")
+    Rel(user_service, shared_rds, "Reads/Writes to user database/schema")
+    Rel(link_service, shared_rds, "Reads/Writes to link database/schema")
     
     Rel(redirect_service, cache, "Reads from")
-    Rel(redirect_service, link_db, "Reads from on cache miss")
+    Rel(redirect_service, shared_rds, "Reads from link database/schema on cache miss")
     Rel(redirect_service, queue, "Publishes events to")
 
     Rel(analytics_service, queue, "Consumes events from")
     Rel(analytics_service, analytics_db, "Writes to")
-    Rel(analytics_service, link_db, "Reads link info from")
+    Rel(analytics_service, shared_rds, "Reads link info from link database/schema")
 ```
 
 ### Component Responsibilities
